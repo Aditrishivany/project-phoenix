@@ -7,7 +7,7 @@ pipeline {
             steps {
                 echo 'Running Maven build and unit tests...'
                 dir('dosage-calculator') {
-                    bat 'mvn clean test'
+                    bat 'mvnw.cmd clean test'
                 }
             }
         }
