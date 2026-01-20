@@ -6,21 +6,21 @@ pipeline {
         stage('Build') {
             steps {
                 echo 'Building the AI model...'
-                sh 'echo "Simulating model training"'
+                bat 'echo Simulating model training > build.log'
             }
         }
 
         stage('Test') {
             steps {
                 echo 'Validating model accuracy...'
-                sh 'echo "Accuracy check passed"'
+                bat 'echo Accuracy check passed > test.log'
             }
         }
 
         stage('Deploy') {
             steps {
                 echo 'Deploying model to production...'
-                sh 'echo "Model deployed successfully"'
+                bat 'echo Model deployed successfully > deploy.log'
             }
         }
     }
@@ -28,7 +28,7 @@ pipeline {
     post {
         success {
             echo 'Pipeline completed successfully 🚀'
-            archiveArtifacts artifacts: '**/*.log', allowEmptyArchive: true
+            archiveArtifacts artifacts: '*.log'
         }
 
         failure {
