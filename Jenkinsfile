@@ -3,36 +3,31 @@ pipeline {
 
     stages {
 
-        stage('Build') {
+        stage('Build & Test') {
             steps {
-                echo 'Building the AI model...'
-                bat 'echo Simulating model training > build.log'
-            }
-        }
-
-        stage('Test') {
-            steps {
-                echo 'Validating model accuracy...'
-                bat 'echo Accuracy check passed > test.log'
+                echo 'Running Maven build and unit tests...'
+                dir('dosage-calculator') {
+                    bat 'mvn clean test'
+                }
             }
         }
 
         stage('Deploy') {
             steps {
-                echo 'Deploying model to production...'
-                bat 'echo Model deployed successfully > deploy.log'
+                echo 'Deploying application (simulated)...'
+                bat 'echo Deployment successful > deploy.log'
             }
         }
     }
 
     post {
         success {
-            echo 'Pipeline completed successfully 🚀'
-            archiveArtifacts artifacts: '*.log'
+            echo 'Pipeline SUCCESS – all tests passed 🚀'
+            archiveArtifacts artifacts: 'dosage-calculator/target/*.jar, deploy.log', allowEmptyArchive: true
         }
 
         failure {
-            echo 'Pipeline failed ❌'
+            echo 'Pipeline FAILED – tests caught a bug ❌'
         }
     }
 }
