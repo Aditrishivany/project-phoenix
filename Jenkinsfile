@@ -1,37 +1,49 @@
 pipeline {
     agent any
 
+    parameters {
+        choice(
+            name: 'ENV',
+            choices: ['DEV', 'STAGING', 'PROD'],
+            description: 'Select environment'
+        )
+
+        string(
+            name: 'VERSION',
+            defaultValue: '1.0.0',
+            description: 'Build or release version'
+        )
+    }
+
     stages {
-        stage('Checkout') {
+        stage('Show Inputs') {
             steps {
-                checkout scm
-                echo "Commit Hash: ${env.GIT_COMMIT}"
+                echo "Environment selected: ${ENV}"
+                echo "Version: ${VERSION}"
             }
         }
 
         stage('Build') {
             steps {
-                dir('delivery-tracker/app') {
-                    bat '..\\gradlew.bat clean build'
-                }
+                echo "Running build for version ${VERSION}"
+                // Add your build steps here
             }
         }
 
-        stage('Package') {
+        stage('Deploy') {
             steps {
-                dir('delivery-tracker/app') {
-                    bat '..\\gradlew.bat distZip'
+                script {
+                    if (ENV == 'DEV') {
+                        echo "Deploying version ${VERSION} to DEV environment"
+                    } 
+                    else if (ENV == 'STAGING') {
+                        echo "Deploying version ${VERSION} to STAGING environment"
+                    } 
+                    else if (ENV == 'PROD') {
+                        echo "Deploying version ${VERSION} to PROD environment"
+                    }
                 }
             }
-        }
-    }
-
-    post {
-        success {
-            archiveArtifacts artifacts: 'delivery-tracker/app/build/distributions/*.zip',
-                             fingerprint: true
         }
     }
 }
-// testing poll scm
-// testing the pollllll
